@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TaskFlow: organize suas tarefas e acompanhe seu progresso.">
+  <title>TaskFlow | Gerenciador de tarefas</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Menu principal">
+      <a class="brand" href="#inicio" aria-label="TaskFlow, início">
+        <span class="brand__icon" aria-hidden="true">✓</span>
+        <span>Task<span class="brand__accent">Flow</span></span>
+      </a>
+
+      <div class="sidebar__caption">ESPAÇO DE TRABALHO</div>
+      <nav class="navigation" aria-label="Navegação">
+        <a class="navigation__link navigation__link--active" href="#inicio"><span aria-hidden="true">▦</span> Visão geral</a>
+        <a class="navigation__link" href="#nova-tarefa"><span aria-hidden="true">＋</span> Nova tarefa</a>
+        <a class="navigation__link" href="#quadro"><span aria-hidden="true">☷</span> Quadro Kanban</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <span class="sidebar__footer-icon" aria-hidden="true">✦</span>
+        <div><strong>Sua melhor versão começa aqui.</strong><span>Uma tarefa de cada vez.</span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="inicio">
+      <header class="page-header">
+        <div class="hero-content">
+          <div class="eyebrow"><span class="hero-sparkle" aria-hidden="true">✦</span> SEU ESPAÇO DE PRODUTIVIDADE</div>
+          <h1>Ideias no papel.<br><span class="hero-highlight">Planos em ação.</span></h1>
+          <p>Menos bagunça, mais conquistas. Organize suas tarefas e acompanhe cada passo do seu dia.</p>
+          <div class="hero-caption"><span class="hero-caption__dot" aria-hidden="true"></span> Planeje · Faça · Conclua</div>
+        </div>
+        <div class="header-actions">
+          <button class="theme-toggle" type="button" id="alternar-tema" aria-label="Ativar modo escuro" aria-pressed="false" title="Alternar tema">
+            <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">☾</span>
+            <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">☀</span>
+            <span id="rotulo-tema">Modo escuro</span>
+          </button>
+          <a class="button button--hero header-action" href="#nova-tarefa"><span aria-hidden="true">＋</span> Nova tarefa</a>
+        </div>
+      </header>
+
+      <section class="dashboard" aria-labelledby="titulo-resumo">
+        <div class="section-heading section-heading--compact">
+          <h2 id="titulo-resumo">Seu resumo</h2>
+          <span class="date-chip" id="data-hoje"></span>
+        </div>
+
+        <div class="stats">
+          <article class="stat-card stat-card--all">
+            <div class="stat-card__label">Total de tarefas <span aria-hidden="true">▦</span></div>
+            <strong id="total-tarefas">0</strong>
+            <span class="stat-card__detail">Tudo que você organizou</span>
+          </article>
+          <article class="stat-card stat-card--pending">
+            <div class="stat-card__label">A fazer <span aria-hidden="true">◷</span></div>
+            <strong id="tarefas-pendentes">0</strong>
+            <span class="stat-card__detail">Esperando por você</span>
+          </article>
+          <article class="stat-card stat-card--progress">
+            <div class="stat-card__label">Em andamento <span aria-hidden="true">↗</span></div>
+            <strong id="tarefas-andamento">0</strong>
+            <span class="stat-card__detail">Você está progredindo</span>
+          </article>
+          <article class="stat-card stat-card--done">
+            <div class="stat-card__label">Concluídas <span aria-hidden="true">✓</span></div>
+            <strong id="tarefas-concluidas">0</strong>
+            <span class="stat-card__detail">Missões cumpridas</span>
+          </article>
+        </div>
+
+        <div class="progress-panel">
+          <div class="progress-panel__text"><div><span class="section-kicker">SEU RITMO</span><strong>Progresso geral</strong><span>Cada tarefa concluída é um passo adiante.</span></div><strong id="porcentagem-progresso">0%</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="Porcentagem de tarefas concluídas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barra-progresso">
+            <div class="progress-fill" id="preenchimento-progresso"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="editor-panel" id="nova-tarefa" aria-labelledby="titulo-formulario">
+        <div class="section-heading"><div><span class="section-kicker">CRIE E PLANEJE</span><h2 id="titulo-formulario">Adicionar nova tarefa</h2></div><span class="panel-decoration" aria-hidden="true">✎</span></div>
+        <form id="form-tarefa">
+          <div class="form-field">
+            <label for="titulo">Título da tarefa <span class="required">*</span></label>
+            <input id="titulo" name="titulo" type="text" placeholder="Ex.: Estudar JavaScript" maxlength="100" required>
+          </div>
+          <div class="form-field">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" rows="3" maxlength="500" placeholder="Detalhes importantes da tarefa..."></textarea>
+          </div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="prioridade">Prioridade <span class="required">*</span></label>
+              <select id="prioridade" name="prioridade" required>
+                <option value="baixa">Baixa</option>
+                <option value="media" selected>Média</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="sp">SP <span class="required">*</span> <span class="form-optional">(dificuldade de 1 a 20)</span></label>
+              <input id="sp" name="sp" type="number" min="1" max="20" step="1" value="1" required aria-describedby="ajuda-sp">
+              <span class="form-help" id="ajuda-sp">1 = mais fácil · 20 = mais difícil</span>
+            </div>
+            <div class="form-field">
+              <label for="prazo">Prazo <span class="form-optional">(opcional)</span></label>
+              <input id="prazo" name="prazo" type="date">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="button button--primary" type="submit" id="botao-salvar">＋ Adicionar tarefa</button>
+            <button class="button button--outline" type="button" id="botao-cancelar" hidden>Cancelar edição</button>
+            <span id="mensagem-formulario" class="form-message" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="quadro" class="board-section" aria-labelledby="titulo-quadro">
+        <div class="section-heading board-section__title">
+          <div><span class="section-kicker">ACOMPANHE O FLUXO</span><h2 id="titulo-quadro">Quadro de tarefas</h2></div>
+          <span class="muted" id="contador-filtros">0 tarefas encontradas</span>
+        </div>
+        <div class="filters" aria-label="Pesquisar e filtrar tarefas">
+          <div class="filter-search">
+            <label for="pesquisa" class="visually-hidden">Pesquisar pelo título</label>
+            <span aria-hidden="true">⌕</span>
+            <input type="search" id="pesquisa" placeholder="Pesquisar tarefas pelo título...">
+          </div>
+          <div class="filter-select">
+            <label for="filtro-prioridade" class="visually-hidden">Filtrar prioridade</label>
+            <select id="filtro-prioridade">
+              <option value="todas">Todas as prioridades</option>
+              <option value="baixa">Baixa</option>
+              <option value="media">Média</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+          <div class="filter-select">
+            <label for="filtro-status" class="visually-hidden">Filtrar status</label>
+            <select id="filtro-status">
+              <option value="todos">Todos os status</option>
+              <option value="pendente">A fazer</option>
+              <option value="andamento">Em andamento</option>
+              <option value="concluida">Concluídas</option>
+            </select>
+          </div>
+          <button type="button" class="button button--outline button--clear" id="limpar-filtros">Limpar filtros</button>
+        </div>
+
+        <p class="board-instruction"><span aria-hidden="true">⠿</span> Arraste as tarefas entre as colunas. No celular, segure a alça <strong>⠿</strong> do cartão para mover.</p>
+        <p id="aviso-kanban" class="visually-hidden" role="status" aria-live="polite"></p>
+        <div class="kanban" id="kanban">
+          <div class="kanban-column" data-coluna="pendente">
+            <div class="kanban-column__header"><h3><span class="status-circle status-circle--pending"></span> A fazer</h3><span class="column-count" id="quantidade-pendente">0</span></div>
+            <div class="kanban-column__body" id="coluna-pendente"></div>
+          </div>
+          <div class="kanban-column" data-coluna="andamento">
+            <div class="kanban-column__header"><h3><span class="status-circle status-circle--progress"></span> Em andamento</h3><span class="column-count" id="quantidade-andamento">0</span></div>
+            <div class="kanban-column__body" id="coluna-andamento"></div>
+          </div>
+          <div class="kanban-column" data-coluna="concluida">
+            <div class="kanban-column__header"><h3><span class="status-circle status-circle--done"></span> Concluídas</h3><span class="column-count" id="quantidade-concluida">0</span></div>
+            <div class="kanban-column__body" id="coluna-concluida"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">TaskFlow · Feito com HTML, CSS e JavaScript · Dados salvos neste navegador</footer>
+    </main>
+  </div>
+</body>
+</html>
